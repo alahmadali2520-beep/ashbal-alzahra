@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>دعوة تفاعلية</title>
+
+  <title>ملتقى أشبال الزهراء</title>
 
   <style>
     @font-face {
@@ -31,26 +32,29 @@
     h2 {
       color: var(--main-color);
       margin-bottom: 10px;
+      font-size: 28px;
     }
 
     input {
       width: 100%;
       padding: 12px;
-      font-size: 16px;
+      font-size: 18px;
       border-radius: 10px;
       border: none;
       margin: 10px 0;
       text-align: center;
       box-sizing: border-box;
+      font-family: 'Noor', sans-serif;
     }
 
     button {
       padding: 12px 20px;
-      margin: 10px;
-      font-size: 15px;
+      margin: 10px 5px;
+      font-size: 16px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
+      font-family: 'Noor', sans-serif;
     }
 
     .download {
@@ -75,9 +79,15 @@
 <body>
 
   <div class="container">
-    <h2 id="title"></h2>
 
-    <input type="text" id="nameInput" placeholder="اكتب اسمك هنا">
+    <h2>ملتقى أشبال الزهراء</h2>
+
+    <input
+      type="text"
+      id="nameInput"
+      placeholder="اكتب الاسم هنا"
+      autocomplete="off"
+    >
 
     <div>
       <button class="clear" onclick="clearName()">مسح</button>
@@ -85,109 +95,160 @@
     </div>
 
     <canvas id="canvas"></canvas>
+
   </div>
 
   <script>
+
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
+    const nameInput = document.getElementById("nameInput");
 
-    const params = new URLSearchParams(window.location.search);
-    const type = params.get("type") || "almazrouei-office";
+    const config = {
+      image: "ashbal-alzahra.jpg",
 
-    let config = {};
+      color: "#9e9157",
 
-    if (type === "almazrouei-office") {
-      config = {
-        image: "almazrouei-office.jpg",
-        title: "الوطني المهيدب",
-        color: "#18689d",
-        box: { x: 0.18, y: 0.78, width: 0.64, height: 0.06 }
-      };
-     } else if (type === "yashfeen-medical") {
-      config = {
-        image: "yashfeen-medical.jpg",
-        title: "شركة يشفين الطبية",
-        color: "#74c6ba",
-        box: { x: 0.20, y: 0.78, width: 0.60, height: 0.07 }
-      };
-    } else if (type === "perfect-life") {
-      config = {
-        image: "perfect-life.jpg",
-        title: "بيرفكت لايف",
-        color: "#108a52",
-        box: { x: 0.18, y: 0.78, width: 0.64, height: 0.06 }
-      };
-    } else {
-      config = {
-        image: "almazrouei-office.jpg",
-        title: "الوطني المهيدب",
-        color: "#18689d",
-        box: { x: 0.18, y: 0.78, width: 0.64, height: 0.06 }
-      };
-    }
-
-    document.getElementById("title").innerText = config.title;
-    document.title = config.title;
-    document.documentElement.style.setProperty("--main-color", config.color);
+      box: {
+        x: 0.18,
+        y: 0.78,
+        width: 0.64,
+        height: 0.06
+      }
+    };
 
     const img = new Image();
+
     img.src = config.image;
 
     img.onload = function () {
+
       canvas.width = img.width;
       canvas.height = img.height;
+
       draw();
+
     };
 
-    document.getElementById("nameInput").addEventListener("input", draw);
+    nameInput.addEventListener("input", draw);
 
     function fitText(text, maxWidth) {
-      let size = 80;
+
+      let size = 90;
+
       do {
+
         ctx.font = size + "px Noor";
         size--;
-      } while (ctx.measureText(text).width > maxWidth && size > 20);
+
+      } while (
+        ctx.measureText(text).width > maxWidth &&
+        size > 20
+      );
+
       return size;
+
     }
 
     function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
 
-      const name = document.getElementById("nameInput").value.trim();
+      ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      const name = nameInput.value.trim();
+
       if (!name) return;
 
       const box = {
+
         x: canvas.width * config.box.x,
+
         y: canvas.height * config.box.y,
-        width: canvas.width * config.box.width,
-        height: canvas.height * config.box.height
+
+        width:
+          canvas.width *
+          config.box.width,
+
+        height:
+          canvas.height *
+          config.box.height
+
       };
 
-      const fontSize = fitText(name, box.width * 0.9);
+      const fontSize = fitText(
+        name,
+        box.width * 0.9
+      );
 
       ctx.fillStyle = config.color;
+
       ctx.textAlign = "center";
+
       ctx.textBaseline = "middle";
-      ctx.font = fontSize + "px Noor";
 
-      const textX = box.x + box.width / 2;
-      const textY = box.y + box.height / 2;
+      ctx.font =
+        fontSize +
+        "px Noor";
 
-      ctx.fillText(name, textX, textY);
+      const textX =
+        box.x +
+        box.width / 2;
+
+      const textY =
+        box.y +
+        box.height / 2;
+
+      ctx.fillText(
+        name,
+        textX,
+        textY
+      );
+
     }
 
     function downloadImage() {
-      const link = document.createElement("a");
-      link.download = "invitation.png";
-      link.href = canvas.toDataURL("image/png");
+
+      const name =
+        nameInput.value.trim() ||
+        "ashbal-alzahra";
+
+      const link =
+        document.createElement("a");
+
+      link.download =
+        name + ".png";
+
+      link.href =
+        canvas.toDataURL(
+          "image/png"
+        );
+
       link.click();
+
     }
 
     function clearName() {
-      document.getElementById("nameInput").value = "";
+
+      nameInput.value = "";
+
       draw();
+
+      nameInput.focus();
+
     }
+
   </script>
 
 </body>
