@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>ملتقى أشبال الزهراء</title>
 
   <style>
@@ -75,11 +74,9 @@
     }
   </style>
 </head>
-
 <body>
 
   <div class="container">
-
     <h2>ملتقى أشبال الزهراء</h2>
 
     <input
@@ -95,20 +92,16 @@
     </div>
 
     <canvas id="canvas"></canvas>
-
   </div>
 
   <script>
-
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     const nameInput = document.getElementById("nameInput");
 
     const config = {
       image: "ashbal-alzahra.jpg",
-
       color: "#ebaf41",
-
       box: {
         x: 0.18,
         y: 0.35,
@@ -118,137 +111,70 @@
     };
 
     const img = new Image();
-
     img.src = config.image;
 
     img.onload = function () {
-
       canvas.width = img.width;
       canvas.height = img.height;
-
       draw();
+    };
 
+    img.onerror = function () {
+      alert("الصورة غير موجودة أو اسمها غير مطابق: " + config.image);
     };
 
     nameInput.addEventListener("input", draw);
 
     function fitText(text, maxWidth) {
-
       let size = 90;
-
       do {
-
         ctx.font = size + "px Noor";
         size--;
-
-      } while (
-        ctx.measureText(text).width > maxWidth &&
-        size > 20
-      );
-
+      } while (ctx.measureText(text).width > maxWidth && size > 20);
       return size;
-
     }
 
     function draw() {
-
-      ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const name = nameInput.value.trim();
-
       if (!name) return;
 
       const box = {
-
         x: canvas.width * config.box.x,
-
         y: canvas.height * config.box.y,
-
-        width:
-          canvas.width *
-          config.box.width,
-
-        height:
-          canvas.height *
-          config.box.height
-
+        width: canvas.width * config.box.width,
+        height: canvas.height * config.box.height
       };
 
-      const fontSize = fitText(
-        name,
-        box.width * 0.9
-      );
+      const fontSize = fitText(name, box.width * 0.9);
 
       ctx.fillStyle = config.color;
-
-      ctx.textAlign = "center";
-
+      ctx.direction = "rtl";
+      ctx.textAlign = "right";
       ctx.textBaseline = "middle";
+      ctx.font = fontSize + "px Noor";
 
-      ctx.font =
-        fontSize +
-        "px Noor";
+      const textX = box.x + box.width;
+      const textY = box.y + box.height / 2;
 
-      const textX =
-        box.x +
-        box.width / 2;
-
-      const textY =
-        box.y +
-        box.height / 2;
-
-      ctx.fillText(
-        name,
-        textX,
-        textY
-      );
-
+      ctx.fillText(name, textX, textY);
     }
 
     function downloadImage() {
-
-      const name =
-        nameInput.value.trim() ||
-        "ashbal-alzahra";
-
-      const link =
-        document.createElement("a");
-
-      link.download =
-        name + ".png";
-
-      link.href =
-        canvas.toDataURL(
-          "image/png"
-        );
-
+      const name = nameInput.value.trim() || "ashbal-alzahra";
+      const link = document.createElement("a");
+      link.download = name + ".png";
+      link.href = canvas.toDataURL("image/png");
       link.click();
-
     }
 
     function clearName() {
-
       nameInput.value = "";
-
       draw();
-
       nameInput.focus();
-
     }
-
   </script>
 
 </body>
